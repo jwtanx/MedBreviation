@@ -1,0 +1,35 @@
+# MedBreviation
+Medical Abbreviation Disambiguation
+
+### Windows Setup
+1. Creating an virtual environment using Python >= 3.8  
+   ```py 3.8 -m venv env```
+2. Activate the env  
+   ```env\Scripts\activate.bat```
+3. Installing the Python libraries  
+   ```pip install -r requirements.txt```
+4. Download **unofficial** Tesseract for Windows: [tesseract-ocr-w64-setup-v5.1.0.20220510.exe (64 bit)](https://github.com/UB-Mannheim/tesseract/wiki)
+5. Adding the path of [Tesseract](https://github.com/maxenxe/HQ-Trivia-Bot-NOT-MAINTAINED-/issues/51)
+6. For simplicity, you can create a shortcut to your desktop and run this script
+   1. For example:
+   - Target: ```C:\Windows\System32\cmd.exe /K "D:\Project\Python\2022\MedBreviation\env\Scripts\activate.bat" && streamlit run main.py```
+   - Start in: ```D:\Project\Python\2022\MedBreviation```
+
+### Linux Setup
+1. Creating an virtual environment using Python >= 3.8  
+   ```python3 -m venv env```
+2. Activate the env  
+   ```source env\Scripts\activate```
+3. Installing the Python libraries  
+   ```pip install -r requirements.txt```
+4. Easy install for Google's Tesseract OCR
+   ```sudo apt install tesseract-ocr```
+
+## Instructions
+1. Run the script
+2. Paste the text  
+   **OR**
+3. Upload the file (only accept PDF, PNG, JPG, JPEG at the moment)
+
+## Future work
+- [ ] More general abbreviation to be included
