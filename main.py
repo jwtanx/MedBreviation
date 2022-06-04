@@ -1,6 +1,5 @@
 # To start: streamlit run main.py
 import os
-import nltk
 import gdown
 import base64
 from io import BytesIO
@@ -16,7 +15,6 @@ def setup():
         st.title("MedBreviation")
     
     st.subheader("📝 Helps you to capture and analyze the abbreviations in medical notes")
-    nltk.download("punkt")
     
     if not os.path.exists("tmp"):
         # Make a new folder for the temp
@@ -24,12 +22,15 @@ def setup():
     if not os.path.exists("dataset"):
         # Make a new folder for the temp
         os.mkdir("dataset")
-        print("Downloading important files")
-        gdown.download(id="1-3f1qu69xhswpTbm7AeZe_cUxvkyJTrr", output="./dataset/clinical_abbr_dataset_sm.csv")
+        print("Downloading dataset (1.5G)")
+        gdown.download(id="1-0hbsMvvwit5FQFv4F6zi9zvTawJxyaU", output="./dataset/clinical_abbr_full.pkl")
 
 
 def get_abbr_fullform_helper(content):
     abbr_fullform, abbr_sent = get_abbr_fullform(content)
+
+    for i, abbr in enumerate(abbr_sent):
+        print(f"{abbr} : {abbr_fullform[i]}")
 
 
 def start():
@@ -69,8 +70,11 @@ def start():
                 text_display = f'<div style="overflow:auto;height:150px;overflow-x:hidden;">{extracted}</div></br>'
                 st.markdown(text_display, unsafe_allow_html=True)
 
-                # TODO: Run the function for abbr locater here
+                # abbr finder and recognizer
                 abbr_fullform, abbr_sent = get_abbr_fullform(extracted)
+
+                for i, abbr in enumerate(abbr_sent):
+                    print(f"{abbr} : {abbr_fullform[i]}")
 
                 # Showing the original pdf
                 base64_pdf = base64.b64encode(bytes).decode("utf-8")

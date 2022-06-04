@@ -1,18 +1,27 @@
-import cv2
 import re
+import cv2
+import json
+import nltk
+nltk.download("punkt")
+import pickle
 import pytesseract
 import numpy as np
-import pandas as pd
 from nltk import tokenize
 from pdfminer.high_level import extract_text
 from sentence_transformers import SentenceTransformer
-# MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 # MODEL2 = SentenceTransformer("bert-base-nli-mean-tokens")
 from sklearn.metrics.pairwise import cosine_similarity
 
 # =========================================================================== #
 
-df = pd.read_csv("dataset/clinical_abbr_dataset_sm.csv")
+# Reading the list of abbreviation available
+with open("./abbr.json", "r") as f:
+    db_abbr_ls = json.load(f)
+
+# Getting the vectorized pandas dataframe from the pickle
+with open("./dataset/clinical_abbr_full.pkl", "rb") as f:
+    df = pickle.load(f)
 
 def extract_text_from_doc(filename):
     """Extracting the text from the images / pdf uploaded by the user
@@ -63,9 +72,10 @@ def _locate_abbr(content):
 
     abbr_sent = {}
     for sent in sent_ls:
-        cur_ls = re.findall(r"[\s]{1,}[\W+]?[A-Z]{2,}[\W+]?[^\.][\s]?", sent)
+        # TODO: Chcek English word "in", "or" not to be taken in as abbr
+        cur_ls = [w for w in sent.split() if w in db_abbr_ls and w.lower() != w]
         for abbr in cur_ls:
-            abbr_sent[abbr.strip()] = sent
+            abbr_sent[abbr] = sent
 
     return abbr_sent
 
@@ -89,27 +99,26 @@ def get_abbr_fullform(content):
 
     """
     
+    # Locating the list of the abbreviation with their respective sentence
     abbr_sent = _locate_abbr(content)
 
-    abbr_fullform = ["N/A" for _ in range(len(abbr_sent))]
+    # Initialize the list of the fullform
+    abbr_fullform = ["N/A" for _ in range(len(abbr_sent))] # N/A is impossible but for future work
 
     for i, (abbr, sent) in enumerate(abbr_sent.items()):
         filtered_df = df[df.ABBR == abbr]
-        text_ls = filtered_df.TEXT.tolist()
-        abbr_ls = filtered_df.LABEL.tolist()
+        vector_ls = filtered_df[filtered_df.columns[2:]].values.tolist()
+        abbr_ls = filtered_df.LABEL.values.tolist()
 
-        if text_ls == []:
-            continue
+        if vector_ls != []:
+            cur_embed = MODEL.encode(sent, show_progress_bar=False)
 
-        embeddings = MODEL.encode(text_ls) # TODO: Remove this and use the processed dataset
-        cur_embed = MODEL.encode(sent)
+            similarities = cosine_similarity(
+                [cur_embed],
+                vector_ls
+            ).flatten()
 
-        similarities = cosine_similarity(
-            [cur_embed],
-            embeddings
-        ).flatten()
-
-        abbr_fullform[i] = abbr_ls[np.argmax(similarities)+1]
+            abbr_fullform[i] = abbr_ls[np.argmax(similarities)+1]
 
     return abbr_fullform, abbr_sent
 
