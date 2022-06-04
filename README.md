@@ -30,7 +30,8 @@ Medical Abbreviation Disambiguation
 2. First time run would take a bit longer as it download a 1.1GB of dataset 
 3. Paste the text  
    **OR**
-4. Upload the file (only accept PDF, PNG, JPG, JPEG at the moment)
+4. Upload the file (only accept PDF (Text-extractable), PNG, JPG, JPEG at the moment)
 
 ## Future work
 - [ ] More general abbreviation to be included
+- [ ] Poppler to convert scanned pdf into picture before passing it into the tesseract

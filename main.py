@@ -28,12 +28,16 @@ def setup():
         gdown.download(id="1-3f1qu69xhswpTbm7AeZe_cUxvkyJTrr", output="./dataset/clinical_abbr_dataset_sm.csv")
 
 
+def get_abbr_fullform_helper(content):
+    abbr_fullform, abbr_sent = get_abbr_fullform(content)
+
+
 def start():
     """ Main webpage """
-    textbox = st.text_area(label="You can paste in the text here", value="", placeholder="Please take note that only the capitalized words will be processed...")
+    textbox = st.text_area(label="You can paste in the text here", placeholder="Please take note that only the capitalized words will be processed...")
 
     if textbox:
-        st.button("RUN", disabled=False, on_click=extract_abbr, args=[textbox])
+        st.button("RUN", disabled=False, on_click=get_abbr_fullform_helper, args=[textbox])
     else:
         st.button("RUN", disabled=True)
 
@@ -66,6 +70,7 @@ def start():
                 st.markdown(text_display, unsafe_allow_html=True)
 
                 # TODO: Run the function for abbr locater here
+                abbr_fullform, abbr_sent = get_abbr_fullform(extracted)
 
                 # Showing the original pdf
                 base64_pdf = base64.b64encode(bytes).decode("utf-8")
@@ -87,5 +92,5 @@ def start():
 
 if __name__ == "__main__":
     setup()
-    from utils import extract_text_from_doc, extract_abbr
+    from utils import extract_text_from_doc, get_abbr_fullform
     start()
