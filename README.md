@@ -1,5 +1,12 @@
 # MedBreviation
-Medical Abbreviation Disambiguation
+
+<div style="display: flex;">
+   <img src="logo.png" width=80/>
+   <h1 style="margin-top:auto; padding-left:15px">MedBreviation™</h1>
+</div>
+</br>
+
+> Your Medical Abbreviation Disambiguation
 
 ### Windows Setup
 1. Creating an virtual environment using Python >= 3.8  
@@ -33,5 +40,6 @@ Medical Abbreviation Disambiguation
 4. Upload the file (only accept PDF (Text-extractable), PNG, JPG, JPEG at the moment)
 
 ## Future work
+- [ ] Converting the dataset abbreviation to uppercase for the abbreviations that have no symbol(s)
 - [ ] More general abbreviation to be included
 - [ ] Poppler to convert scanned pdf into picture before passing it into the tesseract
