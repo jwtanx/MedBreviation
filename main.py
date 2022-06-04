@@ -1,13 +1,23 @@
 # To start: streamlit run main.py
 import os
+import nltk
 import gdown
 import base64
 from io import BytesIO
 import streamlit as st
 
 def setup():
-    st.set_page_config(page_title="MedBreviation", layout="wide", page_icon="logo2.png", initial_sidebar_state="auto")
-    st.title("MedBreviation")
+    """ Initial setup: creating folder and downloading dataset """
+    st.set_page_config(page_title="MedBreviation", layout="wide", page_icon="logo.png", initial_sidebar_state="auto")
+    col1, col2 = st.columns([0.6, 10])
+    with col1:
+        st.image("logo.png")
+    with col2:
+        st.title("MedBreviation")
+    
+    st.subheader("📝 Helps you to capture and analyze the abbreviations in medical notes")
+    nltk.download("punkt")
+    
     if not os.path.exists("tmp"):
         # Make a new folder for the temp
         os.mkdir("tmp")
@@ -19,56 +29,63 @@ def setup():
 
 
 def start():
-    textbox = st.empty().text_area(label="You can paste in the text here", value="", placeholder="Please take note that only the capitalized words will be processed...")
+    """ Main webpage """
+    textbox = st.text_area(label="You can paste in the text here", value="", placeholder="Please take note that only the capitalized words will be processed...")
 
     if textbox:
-        st.button("RUN", disabled=False, on_click=extract)
+        st.button("RUN", disabled=False, on_click=extract_abbr, args=[textbox])
     else:
         st.button("RUN", disabled=True)
 
-    st.empty().caption('<h2 align=center>OR</h2>', unsafe_allow_html=True)
+    st.caption('<h2 align=center>OR</h2>', unsafe_allow_html=True)
 
+    if not textbox:
+        uploaded_file = st.file_uploader("Upload a document", type=["pdf", "png", "jpg", "jpeg"])
+        display_file = st.empty()
+        filename = ""
 
-    uploaded_file = st.file_uploader("Upload a document", type=["pdf", "png", "jpg", "jpeg"])
-    display_file = st.empty()
-    filename = ""
+        if not uploaded_file:
+            display_file.info("Waiting for file to be uploaded")
+            return
 
-    if not uploaded_file:
-        display_file.info("Please drag in your file here")
-        return
+        bytes = uploaded_file.getvalue()
+        filename = uploaded_file.name.lower()
+        tmp_filepath = os.path.join("./tmp", filename)
 
-    content = uploaded_file.getvalue()
-    filename = uploaded_file.name.lower()
-    tmp_filepath = os.path.join("./tmp", filename)
+        if isinstance(uploaded_file, BytesIO):
 
-    if isinstance(uploaded_file, BytesIO):
+            with open(tmp_filepath, "wb") as f:
+                f.write(bytes)  # write this content elsewhere
 
-        with open(tmp_filepath, "wb") as f:
-            f.write(content)  # write this content elsewhere
+            if tmp_filepath.endswith(".pdf"):
 
-        if tmp_filepath.endswith(".pdf"):
+                # Showing the extracted text from pdf
+                extracted = extract_text_from_doc(tmp_filepath)
+                st.caption("<h2>Text extracted from PDF</h2>", unsafe_allow_html=True)
+                text_display = f'<div style="overflow:auto;height:150px;overflow-x:hidden;">{extracted}</div></br>'
+                st.markdown(text_display, unsafe_allow_html=True)
 
-            # Showing the extracted text from pdf
-            extracted = extract_text_from_doc(tmp_filepath)
-            st.empty().caption("<h2>Text extracted from PDF</h2>", unsafe_allow_html=True)
-            text_display = f'<div style="overflow:scroll;height:300px;overflow-x:hidden;">{extracted}</div></br>'
-            st.markdown(text_display, unsafe_allow_html=True)
+                # TODO: Run the function for abbr locater here
 
-            # TODO: Run the function for abbr locater here
+                # Showing the original pdf
+                base64_pdf = base64.b64encode(bytes).decode("utf-8")
+                pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width=100% height=1000 type="application/pdf" >'
+                st.markdown(pdf_display, unsafe_allow_html=True)
 
-            # Showing the original pdf
-            base64_pdf = base64.b64encode(content).decode("utf-8")
-            pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width=100% height=1000 type="application/pdf" >'
-            st.markdown(pdf_display, unsafe_allow_html=True)
+            else:
+                extracted = extract_text_from_doc(tmp_filepath)
+                st.caption("<h2>Text extracted from IMAGE</h2>", unsafe_allow_html=True)
+                text_display = f'<div style="overflow:auto;height:150px;overflow-x:hidden;">{extracted}</div></br>'
+                st.markdown(text_display, unsafe_allow_html=True)
 
-        else:
-            display_file.image(uploaded_file)
+                base64_img = base64.b64encode(bytes).decode("utf-8")
+                img_display = f'<img src="data:image;base64,{base64_img}" alt="Uploaded" width=100%></br>'
+                st.markdown(img_display, unsafe_allow_html=True)
 
-    uploaded_file.close()
+        uploaded_file.close()
 
 
 if __name__ == "__main__":
     setup()
-    from utils import extract_text_from_doc, extract
+    from utils import extract_text_from_doc, extract_abbr
     start()
-

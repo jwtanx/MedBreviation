@@ -3,7 +3,7 @@ import re
 import pytesseract
 from pdfminer.high_level import extract_text
 from sentence_transformers import SentenceTransformer
-MODEL1 = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+# MODEL1 = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 # MODEL2 = SentenceTransformer("bert-base-nli-mean-tokens")
 
 # =========================================================================== #
@@ -20,16 +20,18 @@ def extract_text_from_doc(filename):
     content = ""
 
     # Checking if the file is pdf or image
-    if filename.lower().endswith(".pdf"):
+    if filename.endswith(".pdf"):
         content = " ".join(extract_text(filename).split())
 
     else:
         img = cv2.imread(filename, 0)
         extracted = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)["text"]
+        extracted = " ".join([w for w in extracted if w != ""])
         content = re.sub(r"\s+", " ", extracted).strip()
 
     return content
 
-def extract():
+def extract_abbr(content):
     # TODO: RUN THE MODEL HERE
+    print(content)
     pass

@@ -26,10 +26,11 @@ Medical Abbreviation Disambiguation
    ```sudo apt install tesseract-ocr```
 
 ## Instructions
-1. Run the script
-2. Paste the text  
+1. Run the script by activating the environment first then ```streamlit run main.py```
+2. First time run would take a bit longer as it download a 1.1GB of dataset 
+3. Paste the text  
    **OR**
-3. Upload the file (only accept PDF, PNG, JPG, JPEG at the moment)
+4. Upload the file (only accept PDF, PNG, JPG, JPEG at the moment)
 
 ## Future work
 - [ ] More general abbreviation to be included
