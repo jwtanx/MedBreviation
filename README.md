@@ -31,12 +31,13 @@
 
 ## Instructions
 1. Run the script by activating the environment first then ```streamlit run main.py```
-2. First time run would take a bit longer as it download a 1.1GB of dataset 
+2. First time run would take a bit longer as it download a 1.5GB of dataset 
 3. Paste the text  
    **OR**
 4. Upload the file (only accept PDF (Text-extractable), PNG, JPG, JPEG at the moment)
 
 ## Future work
+- [ ] Poppler to convert scanned pdf into picture before passing it into the tesseract
+- [ ] Handle text file
 - [ ] Converting the dataset abbreviation to uppercase for the abbreviations that have no symbol(s)
 - [ ] More general abbreviation to be included
-- [ ] Poppler to convert scanned pdf into picture before passing it into the tesseract
