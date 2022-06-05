@@ -1,10 +1,8 @@
-# MedBreviation
-
-<div style="display: flex; flex-direction:row">
-   <img src="logo.png" width=80/>
-   <h1 style="margin-top:auto; padding-left:15px">MedBreviation™</h1>
+<div align="center">
+   <img src="logo.png" alt="MedBreviation™" width="150">
 </div>
-</br>
+
+# MedBreviation™
 
 > Your Medical Abbreviation Disambiguation
 
