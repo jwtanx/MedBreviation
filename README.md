@@ -1,4 +1,4 @@
-<table>
+<table border="none">
    <th><img src="logo.png" width=100></th>
    <th><h1><b>MedBreviation™</b></h1></th>
 </table>
