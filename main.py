@@ -47,7 +47,7 @@ def start():
     seprator.caption('<h2 align=center>OR</h2>', unsafe_allow_html=True)
 
     if not textholder:
-        uploaded_file = st.file_uploader("Upload a document", type=["pdf", "png", "jpg", "jpeg"])
+        uploaded_file = st.file_uploader("Upload a document", type=["pdf", "png", "jpg", "jpeg", "txt"])
         display_file = st.empty()
         filename = ""
 
@@ -68,7 +68,19 @@ def start():
             with open(tmp_filepath, "wb") as f:
                 f.write(bytes)  # write this content elsewhere
 
-            if tmp_filepath.endswith(".pdf"):
+            if filename.endswith(".txt"):
+                # Abbreviation finder and recognizer
+                decoded = bytes.decode("UTF-8")
+                re_df = get_abbr_fullform(decoded)
+                extracted_table.table(re_df)
+                if re_df.empty:
+                    extracted_table.empty()
+
+                st.caption("<h2>Text extracted from TXT</h2>", unsafe_allow_html=True)
+                text_display = f'<div style="overflow:auto;height:150px;overflow-x:hidden;">{decoded}</div></br>'
+                st.markdown(text_display, unsafe_allow_html=True)
+
+            elif tmp_filepath.endswith(".pdf"):
 
                 # Extracting the content of the pdf
                 extracted = extract_text_from_doc(tmp_filepath)

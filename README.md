@@ -37,7 +37,6 @@
 4. Upload the file (only accept PDF (Text-extractable), PNG, JPG, JPEG at the moment)
 
 ## Future work
+- [x] Handle text file
 - [ ] Poppler to convert scanned pdf into picture before passing it into the tesseract
-- [ ] Handle text file
-- [ ] Converting the dataset abbreviation to uppercase for the abbreviations that have no symbol(s)
 - [ ] More general abbreviation to be included
