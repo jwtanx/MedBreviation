@@ -6,6 +6,7 @@ nltk.download("punkt")
 import pickle
 import pytesseract
 import numpy as np
+import pandas as pd
 from nltk import tokenize
 from pdfminer.high_level import extract_text
 from sentence_transformers import SentenceTransformer
@@ -73,7 +74,8 @@ def _locate_abbr(content):
     abbr_sent = {}
     for sent in sent_ls:
         # TODO: Chcek English word "in", "or" not to be taken in as abbr
-        cur_ls = [w for w in sent.split() if w in db_abbr_ls and w.lower() != w]
+        cleaned_sent = re.sub(r"[\,|\.|\?|\!]", "", sent)
+        cur_ls = [w for w in cleaned_sent.split() if w in db_abbr_ls and w.lower() != w]
         for abbr in cur_ls:
             abbr_sent[abbr] = sent
 
@@ -90,15 +92,10 @@ def get_abbr_fullform(content):
 
     Returns
     -------
-    list
-        The list of the full form
-    dict
-        The dictionary of the list of the abbreviation with their respective sentence
-        Key: Abbreviation
-        Val: The sentence in which the abbreviation is in
+    pandas.core.frame.DataFrame
+        Includes: Abbreviation, Fullform & Sentence
 
     """
-    
     # Locating the list of the abbreviation with their respective sentence
     abbr_sent = _locate_abbr(content)
 
@@ -120,5 +117,10 @@ def get_abbr_fullform(content):
 
             abbr_fullform[i] = abbr_ls[np.argmax(similarities)+1]
 
-    return abbr_fullform, abbr_sent
+    table = pd.DataFrame()
+    table["Abbreviation"] = abbr_sent.keys()
+    table["Fullform"] = abbr_fullform
+    table["Sentence"] = [re.sub(abbr, f"‼️{abbr}‼️", sent) for abbr, sent in abbr_sent.items()]
+
+    return table
 
