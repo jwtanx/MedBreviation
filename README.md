@@ -11,7 +11,7 @@
 2. Activate the env  
    ```env\Scripts\activate.bat```
 3. Installing the Python libraries  
-   ```pip install -r requirement.txt```
+   ```pip install -r requirements.txt```
 4. Download **unofficial** Tesseract for Windows: [tesseract-ocr-w64-setup-v5.1.0.20220510.exe (64 bit)](https://github.com/UB-Mannheim/tesseract/wiki)
 5. Adding the path of [Tesseract](https://github.com/maxenxe/HQ-Trivia-Bot-NOT-MAINTAINED-/issues/51)
 6. For simplicity, you can create a shortcut to your desktop and run this script

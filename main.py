@@ -74,7 +74,7 @@ def start():
                 re_df = get_abbr_fullform(decoded)
                 extracted_table.table(re_df)
                 if re_df.empty:
-                    extracted_table.empty()
+                    extracted_table.empty().error("No abbreviation found")
 
                 st.caption("<h2>Text extracted from TXT</h2>", unsafe_allow_html=True)
                 text_display = f'<div style="overflow:auto;height:150px;overflow-x:hidden;">{decoded}</div></br>'
@@ -89,7 +89,7 @@ def start():
                 re_df = get_abbr_fullform(extracted)
                 extracted_table.table(re_df)
                 if re_df.empty:
-                    extracted_table.empty()
+                    extracted_table.empty().error("No abbreviation found")
 
                 st.caption("<h2>Text extracted from PDF</h2>", unsafe_allow_html=True)
                 text_display = f'<div style="overflow:auto;height:150px;overflow-x:hidden;">{extracted}</div></br>'
@@ -108,7 +108,7 @@ def start():
                 re_df = get_abbr_fullform(extracted)
                 extracted_table.table(re_df)
                 if re_df.empty:
-                    extracted_table.empty()
+                    extracted_table.empty().error("No abbreviation found")
 
                 st.caption("<h2>Text extracted from IMAGE</h2>", unsafe_allow_html=True)
                 text_display = f'<div style="overflow:auto;height:150px;overflow-x:hidden;">{extracted}</div></br>'
