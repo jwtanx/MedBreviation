@@ -147,6 +147,8 @@ def get_abbr_fullform(content):
     -------
     pandas.core.frame.DataFrame
         Includes: Abbreviation, Fullform & Sentence
+    list
+        The lsit fo the abbreviation found in the current content
 
     """
     # Locating the list of the abbreviation with their respective sentence
@@ -176,7 +178,19 @@ def get_abbr_fullform(content):
     table = pd.DataFrame()
     table["Abbreviation"] = abbr_sent.keys()
     table["Fullform"] = abbr_fullform
-    table["Sentence"] = [re.sub(abbr, f"‼️{abbr}‼️", sent) for abbr, sent in abbr_sent.items()]
 
-    return table
+    phrase_ls = []
+
+    for abbr, sent in abbr_sent.items():
+        replaced = f"‼️{abbr}‼️"
+        text_around = re.sub(abbr, replaced, sent)
+
+        word_idx = text_around.index(f"‼️{abbr}‼️")
+        
+        if word_idx != -1:
+            phrase_ls.append(f"…{text_around[word_idx-10:word_idx+len(replaced)+10]}…")
+
+    table["Sentence"] = phrase_ls
+
+    return table, list(abbr_sent.keys())
 

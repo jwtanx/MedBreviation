@@ -1,5 +1,6 @@
 # To start: streamlit run main.py
 import os
+import re
 import gdown
 import base64
 from io import BytesIO
@@ -30,13 +31,13 @@ def start():
     """ Main content """
     extracted_table = st.empty()
     textbox = st.empty()
-    textholder = textbox.text_area(label="You can paste in the text here", placeholder="Please take note that only the capitalized words will be processed...")
+    textholder = textbox.text_area(label="Clear the textbox to switch to upload mode", placeholder="Your text goes here...")
     run_btn = st.empty()
 
     if textbox:
         clicked = run_btn.button("RUN", disabled=False)
         if clicked:
-            re_df = get_abbr_fullform(textholder)
+            re_df, _ = get_abbr_fullform(textholder.replace("‼️", ""))
             extracted_table.table(re_df)
             if re_df.empty:
                 extracted_table.empty().error("No abbreviation found")
@@ -71,7 +72,9 @@ def start():
             if filename.endswith(".txt"):
                 # Abbreviation finder and recognizer
                 decoded = bytes.decode("UTF-8")
-                re_df = get_abbr_fullform(decoded)
+                re_df, abbr_ls = get_abbr_fullform(decoded)
+                for abbr in abbr_ls:
+                    decoded = re.sub(abbr, f"‼️{abbr}‼️", decoded)
                 extracted_table.table(re_df)
                 if re_df.empty:
                     extracted_table.empty().error("No abbreviation found")
@@ -86,7 +89,9 @@ def start():
                 extracted = extract_text_from_doc(tmp_filepath)
 
                 # Abbreviation finder and recognizer
-                re_df = get_abbr_fullform(extracted)
+                re_df, abbr_ls = get_abbr_fullform(extracted)
+                for abbr in abbr_ls:
+                    extracted = re.sub(abbr, f"‼️{abbr}‼️", extracted)
                 extracted_table.table(re_df)
                 if re_df.empty:
                     extracted_table.empty().error("No abbreviation found")
@@ -105,7 +110,9 @@ def start():
                 extracted = extract_text_from_doc(tmp_filepath)
 
                 # Abbreviation finder and recognizer
-                re_df = get_abbr_fullform(extracted)
+                re_df, abbr_ls = get_abbr_fullform(extracted)
+                for abbr in abbr_ls:
+                    extracted = re.sub(abbr, f"‼️{abbr}‼️", extracted)
                 extracted_table.table(re_df)
                 if re_df.empty:
                     extracted_table.empty().error("No abbreviation found")
