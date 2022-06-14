@@ -23,7 +23,7 @@
 1. Creating an virtual environment using Python >= 3.8  
    ```python3 -m venv env```
 2. Activate the env  
-   ```source env\Scripts\activate```
+   ```source env\bin\activate```
 3. Installing the Python libraries  
    ```pip install -r requirements.txt```
 4. Easy install for Google's Tesseract OCR
