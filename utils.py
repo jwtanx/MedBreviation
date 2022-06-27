@@ -4,8 +4,6 @@ import cv2
 import json
 import nltk
 import platform
-nltk.download("punkt")
-nltk.download('omw-1.4')
 import pickle
 import pytesseract
 import numpy as np
@@ -13,16 +11,23 @@ import pandas as pd
 from nltk import tokenize
 from pdfminer.high_level import extract_text
 from sentence_transformers import SentenceTransformer
-try:
-    if platform.system() == "Windows":
-        MODEL = SentenceTransformer(f"C:/Users/{os.getlogin()}/.cache/torch/sentence_transformers/sentence-transformers_all-MiniLM-L6-v2")
-    else:
-        MODEL = SentenceTransformer(f"~/.cache/torch/sentence_transformers/sentence-transformers_all-MiniLM-L6-v2")
-except Exception as e:
-    MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-    
-# MODEL2 = SentenceTransformer("bert-base-nli-mean-tokens")
 from sklearn.metrics.pairwise import cosine_similarity
+import streamlit as st
+
+@st.cache(allow_output_mutation=True)
+def load_model():
+    nltk.download("punkt")
+    nltk.download('omw-1.4')
+    try:
+        if platform.system() == "Windows":
+            return SentenceTransformer(f"C:/Users/{os.getlogin()}/.cache/torch/sentence_transformers/sentence-transformers_all-MiniLM-L6-v2")
+        else:
+            return SentenceTransformer(f"~/.cache/torch/sentence_transformers/sentence-transformers_all-MiniLM-L6-v2")
+    except Exception as e:
+        return SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+
+# MODEL2 = SentenceTransformer("bert-base-nli-mean-tokens")
+MODEL = load_model()
 
 # =========================================================================== #
 
